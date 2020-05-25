@@ -1,0 +1,2 @@
+1. To run webpack-dev from project folder:
+node_modules/.bin/webpack-dev-server
