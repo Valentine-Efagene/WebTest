@@ -109,7 +109,7 @@ function NavBar() {
           <LinkContainer to='/about'>
             <NavItem>About</NavItem>
           </LinkContainer>
-          <LinkContainer to='/addcontact'>
+          <LinkContainer to='/ContactAdd'>
             <NavItem>Add Contact</NavItem>
           </LinkContainer>
           <LinkContainer to='/testlogin'>

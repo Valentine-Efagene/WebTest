@@ -22,13 +22,20 @@ import withToast from './withToast.jsx';
 import UserContext from './UserContext.js';
 import PhoneNumberInput from './PhoneNumberInput.jsx';
 
-class AddContact extends React.Component {
+class ContactAdd extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       showingValidation: false,
-      contact: null,
+      contact: {
+        name: '',
+        personalNumber: '',
+        businessNumber: '',
+        address: '',
+        email: '',
+        birthday: '',
+      },
       loading: false,
       myData: null,
     };
@@ -45,16 +52,6 @@ class AddContact extends React.Component {
     this.setState((prevState) => ({
       contact: { ...prevState.contact, [name]: value },
     }));
-
-    const { contact } = this.state;
-
-    if (!contact) {
-      return;
-    }
-
-    if (contact.name !== null || contact.name !== '') {
-      this.dismissValidation();
-    }
   }
 
   async getRealTimeUpdate() {
@@ -89,14 +86,18 @@ class AddContact extends React.Component {
     event.preventDefault();
     const { showSuccess, showError } = this.props;
     const { contact } = this.state;
-    console.log(`handleSubmit Contact name: ${contact.name}`);
+    if (contact.name === null) {
+      this.showValidation();
+      return;
+    }
 
-    if (contact.name === null || contact.name === '') {
+    if (contact.name.trim() === '') {
       this.showValidation();
       return;
     }
 
     this.dismissValidation();
+    console.log(`handleSubmit Contact name: ${contact.name}`);
     const {
       name,
       personalNumber,
@@ -122,6 +123,7 @@ class AddContact extends React.Component {
       })
       .then((ref) => {
         console.log('Contact written with ID: ', ref.id);
+        showSuccess('Added');
       })
       .catch((error) => {
         showError(error.message);
@@ -191,7 +193,7 @@ class AddContact extends React.Component {
                 </Col>
                 <Col sm={6}>
                   <FormControl
-                    name='personalMumber'
+                    name='personalNumber'
                     placeholder='Personal Number'
                     componentClass={PhoneNumberInput}
                     onChange={this.onChange}
@@ -296,6 +298,6 @@ class AddContact extends React.Component {
   }
 }
 
-AddContact.contextType = UserContext;
-const AddContactWithToast = withToast(AddContact);
-export default AddContactWithToast;
+ContactAdd.contextType = UserContext;
+const ContactAddWithToast = withToast(ContactAdd);
+export default ContactAddWithToast;

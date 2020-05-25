@@ -19,6 +19,7 @@ export default class PhoneNumberInput extends React.Component {
   }
 
   onChange(e) {
+    const { onChange: onChangeFromProps } = this.props;
     const { value: oldValue } = this.state;
     if (e.target.value.match(/^[+0-9]/) || e.target.value === '') {
       this.setState({ value: e.target.value });
@@ -29,11 +30,13 @@ export default class PhoneNumberInput extends React.Component {
     if (e.target.value.match(/[a-zA-Z-`~/<?>/.!@#$%^&*()_=]/)) {
       this.setState({ value: oldValue });
     }
+
+    onChangeFromProps(e);
   }
 
   render() {
     const { focused, value } = this.state;
-    const { value: origValue, onValidityChange, ...props } = this.props;
+    const { onValidityChange, ...props } = this.props;
     return (
       <input
         {...props}

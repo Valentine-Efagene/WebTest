@@ -42,6 +42,7 @@ class ContactRowPlain extends React.Component {
         <td>{contact.businessNumber}</td>
         <td>{contact.email}</td>
         <td>{contact.address}</td>
+        <td>{contact.birthday}</td>
         <td>
           <LinkContainer to={`/edit/${contact.id}`}>
             <OverlayTrigger delayShow={1000} overlay={editTooltip}>
@@ -85,6 +86,7 @@ export default function ContactTable({ contacts, deleteContact }) {
           <th>Email</th>
           <th>Addresss</th>
           <th>Birthday</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>{contactRows}</tbody>
