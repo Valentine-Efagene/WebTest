@@ -73,7 +73,7 @@ class LogIn extends Component {
     const { showSuccess, showError } = this.props;
     const { onUserChange } = this.context;
     this.startLoading();
-    firebase
+    await firebase
       .auth()
       .signOut()
       .then((res) => {
@@ -93,7 +93,7 @@ class LogIn extends Component {
     const { showError, showSuccess } = this.props;
     const { onUserChange } = this.context;
     this.startLoading();
-    firebase
+    await firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then((res) => {

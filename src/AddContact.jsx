@@ -30,25 +30,24 @@ class AddContact extends React.Component {
       showingValidation: false,
       contact: null,
       loading: false,
-      invalidFields: {},
       myData: null,
     };
 
     this.onChange = this.onChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.onValidityChange = this.onValidityChange.bind(this);
     this.dismissValidation = this.dismissValidation.bind(this);
     this.showValidation = this.showValidation.bind(this);
   }
 
   onChange(event) {
-    console.log('Onchange');
+    console.log(`Onchange ${event.target.name}, ${event.target.value}`);
     const { name, value } = event.target;
     this.setState((prevState) => ({
-      contact: { ...prevState.user, [name]: value },
+      contact: { ...prevState.contact, [name]: value },
     }));
 
     const { contact } = this.state;
+
     if (!contact) {
       return;
     }
@@ -58,19 +57,11 @@ class AddContact extends React.Component {
     }
   }
 
-  onValidityChange(event, valid) {
-    const { name } = event.target;
-    this.setState((prevState) => {
-      const invalidFields = { ...prevState.invalidFields, [name]: !valid };
-      if (valid) delete invalidFields[name];
-      return { invalidFields };
-    });
-  }
-
-  getRealTimeUpdate() {
+  async getRealTimeUpdate() {
     const { contact } = this.state;
+    const firestore = firebase.firestore();
     const docRef = firestore.collection('contacts').doc(contact.name);
-    docRef.onSnapshot((doc) => {
+    await docRef.onSnapshot((doc) => {
       if (doc && doc.exists) {
         const myData = doc.data();
         this.setState({ myData });
@@ -96,12 +87,9 @@ class AddContact extends React.Component {
 
   async handleSubmit(event) {
     event.preventDefault();
-    this.onChange(event);
     const { showSuccess, showError } = this.props;
-    const { contact, invalidFields } = this.state;
-
-    console.log(`Contact: ${contact.name}`);
-    // if (Object.keys(invalidFields).length !== 0) return;
+    const { contact } = this.state;
+    console.log(`handleSubmit Contact name: ${contact.name}`);
 
     if (contact.name === null || contact.name === '') {
       this.showValidation();
@@ -109,9 +97,6 @@ class AddContact extends React.Component {
     }
 
     this.dismissValidation();
-
-    const firestore = firebase.firestore();
-    const docRef = firestore.collection('contacts').doc(contact.name);
     const {
       name,
       personalNumber,
@@ -120,8 +105,22 @@ class AddContact extends React.Component {
       email,
       birthday,
     } = contact;
-    docRef
-      .set({ name, personalNumber, businessNumber, address, email, birthday })
+
+    // const docRef = firestore.collection('contacts');
+    // await docRef.add(contact);
+
+    const firestore = firebase.firestore();
+    const docRef = firestore.collection('contacts').doc(name);
+
+    await docRef
+      .set({
+        name: name || '',
+        personalNumber: personalNumber || '',
+        businessNumber: businessNumber || '',
+        address: address || '',
+        email: email || '',
+        birthday: birthday || '',
+      })
       .then(() => {
         showSuccess('Contact created');
       })
@@ -238,7 +237,7 @@ class AddContact extends React.Component {
                 </Col>
                 <Col sm={6}>
                   <FormControl
-                    name='text'
+                    name='address'
                     placeholder='Address'
                     type='text'
                     onChange={this.onChange}

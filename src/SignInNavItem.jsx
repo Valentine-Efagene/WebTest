@@ -19,7 +19,7 @@ class SigninNavItem extends React.Component {
   async signOut() {
     const { showSuccess, showError } = this.props;
     const { onUserChange } = this.context;
-    firebase
+    await firebase
       .auth()
       .signOut()
       .then((res) => {
