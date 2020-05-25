@@ -9,11 +9,13 @@ import {
   Image,
   FormControl,
   Button,
-  // Spinner,
   ProgressBar,
   ButtonToolbar,
   Alert,
 } from 'react-bootstrap';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firebase-firestore';
 
 import withToast from './withToast.jsx';
 import UserContext from './UserContext.js';
