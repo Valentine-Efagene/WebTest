@@ -103,6 +103,9 @@ function NavBar() {
           <LinkContainer to='/home'>
             <NavItem>Home</NavItem>
           </LinkContainer>
+          <LinkContainer to='/contacts'>
+            <NavItem>Contacts</NavItem>
+          </LinkContainer>
           <LinkContainer to='/about'>
             <NavItem>About</NavItem>
           </LinkContainer>

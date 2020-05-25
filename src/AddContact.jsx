@@ -110,10 +110,9 @@ class AddContact extends React.Component {
     // await docRef.add(contact);
 
     const firestore = firebase.firestore();
-    const docRef = firestore.collection('contacts').doc(name);
-
+    const docRef = firestore.collection('contacts');
     await docRef
-      .set({
+      .add({
         name: name || '',
         personalNumber: personalNumber || '',
         businessNumber: businessNumber || '',
@@ -121,8 +120,8 @@ class AddContact extends React.Component {
         email: email || '',
         birthday: birthday || '',
       })
-      .then(() => {
-        showSuccess('Contact created');
+      .then((ref) => {
+        console.log('Contact written with ID: ', ref.id);
       })
       .catch((error) => {
         showError(error.message);

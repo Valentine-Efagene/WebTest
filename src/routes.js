@@ -4,6 +4,7 @@ import About from './About.jsx';
 import LogIn from './LogIn.jsx';
 import TestLogin from './TestLogin.jsx';
 import AddContact from './AddContact.jsx';
+import ContactList from './ContactList.jsx';
 
 const routes = [
   { path: '/home', component: Home },
@@ -11,6 +12,8 @@ const routes = [
   { path: '/login', component: LogIn },
   { path: '/addcontact', component: AddContact },
   { path: '/testlogin', component: TestLogin },
+  { path: '/contacts', component: ContactList },
+  // { path: '/edit/:id', component: ContactEdit },
   { path: '*', component: NotFound },
 ];
 
