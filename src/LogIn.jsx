@@ -128,7 +128,7 @@ class LogIn extends Component {
           showError(error.message);
         }
       })
-      .catch(() => {
+      .finally(() => {
         this.stoptLoading();
       });
   }
