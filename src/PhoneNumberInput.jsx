@@ -3,7 +3,7 @@ import React from 'react';
 export default class PhoneNumberInput extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { value: '', focused: false };
+    this.state = { value: props.value, focused: false };
 
     this.onFocus = this.onFocus.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -36,11 +36,12 @@ export default class PhoneNumberInput extends React.Component {
 
   render() {
     const { focused, value } = this.state;
+    const { value: propsValue } = this.props;
     const { onValidityChange, ...props } = this.props;
     return (
       <input
         {...props}
-        value={value}
+        value={value || propsValue || ''}
         placeholder={focused ? '+234 / 0-0' : 'Phone Number'}
         onFocus={this.onFocus}
         onChange={this.onChange}

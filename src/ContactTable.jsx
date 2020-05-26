@@ -16,10 +16,10 @@ import UserContext from './UserContext.js';
 class ContactRowPlain extends React.Component {
   render() {
     const { contact, deleteContact, index } = this.props;
-    const user = this.context;
+    const { user } = this.context;
     const disabled = !user;
 
-    const editTooltip = (
+    const updateTooltip = (
       <Tooltip id='close-tooltip' placement='top'>
         Edit Contact
       </Tooltip>
@@ -32,7 +32,27 @@ class ContactRowPlain extends React.Component {
 
     function onDelete(e) {
       e.preventDefault();
-      deleteContact(index);
+      deleteContact(contact.id);
+    }
+
+    let actions = null;
+    if (user) {
+      actions = (
+        <td>
+          <LinkContainer to={`/edit/${contact.id}`}>
+            <OverlayTrigger delayShow={1000} overlay={updateTooltip}>
+              <Button bsSize='xsmall'>
+                <Glyphicon glyph='edit' />
+              </Button>
+            </OverlayTrigger>
+          </LinkContainer>
+          <OverlayTrigger delayShow={1000} overlay={deleteTooltip}>
+            <Button disabled={disabled} bsSize='xsmall' onClick={onDelete}>
+              <Glyphicon glyph='trash' />
+            </Button>
+          </OverlayTrigger>
+        </td>
+      );
     }
 
     return (
@@ -43,20 +63,7 @@ class ContactRowPlain extends React.Component {
         <td>{contact.email}</td>
         <td>{contact.address}</td>
         <td>{contact.birthday}</td>
-        <td>
-          <LinkContainer to={`/edit/${contact.id}`}>
-            <OverlayTrigger delayShow={1000} overlay={editTooltip}>
-              <Button bsSize='xsmall'>
-                <Glyphicon glyph='edit' />
-              </Button>
-            </OverlayTrigger>
-          </LinkContainer>{' '}
-          <OverlayTrigger delayShow={1000} overlay={deleteTooltip}>
-            <Button disabled={disabled} bsSize='xsmall' onClick={onDelete}>
-              <Glyphicon glyph='trash' />
-            </Button>
-          </OverlayTrigger>
-        </td>
+        {actions}
       </tr>
     );
   }
@@ -66,15 +73,19 @@ ContactRowPlain.contextType = UserContext;
 const ContactRow = withRouter(ContactRowPlain);
 delete ContactRow.contextType;
 
-export default function ContactTable({ contacts, deleteContact }) {
-  const contactRows = contacts.map((contact, index) => (
+export default function ContactTable({ contacts, deleteContact, user }) {
+  const contactRows = contacts.map((contact) => (
     <ContactRow
       key={contact.id}
       contact={contact}
       deleteContact={deleteContact}
-      index={index}
     />
   ));
+
+  let action = null;
+  if (user) {
+    action = <th>Action</th>;
+  }
 
   return (
     <Table bordered condensed hover responsive>
@@ -86,7 +97,7 @@ export default function ContactTable({ contacts, deleteContact }) {
           <th>Email</th>
           <th>Addresss</th>
           <th>Birthday</th>
-          <th>Action</th>
+          {action}
         </tr>
       </thead>
       <tbody>{contactRows}</tbody>

@@ -27,11 +27,11 @@ class ContactFilter extends React.Component {
     return (
       <div>
         <Row>
-          <Col xs={6} sm={4} md={3} lg={2}>
+          <Col xs={10} sm={8} md={8} lg={6}>
             <FormGroup>
-              <ControlLabel>Name</ControlLabel>
               <FormControl
                 type='text'
+                placeholder='Not yet implemented'
                 value={name}
                 onChange={this.onChangeStatus}
               />

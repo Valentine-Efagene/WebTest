@@ -36,7 +36,6 @@ class LogIn extends Component {
     this.showValidation = this.showValidation.bind(this);
     this.signUpWithEmail = this.signUpWithEmail.bind(this);
     this.signInWithEmail = this.signInWithEmail.bind(this);
-    this.checkUser = this.checkUser.bind(this);
     this.signOut = this.signOut.bind(this);
   }
 
@@ -140,7 +139,7 @@ class LogIn extends Component {
       });
   }
 
-  async checkUser() {
+  /* async checkUser() {
     const { showSuccess, showError } = this.props;
     const { onUserChange } = this.context;
     this.startLoading();
@@ -154,7 +153,7 @@ class LogIn extends Component {
 
     onUserChange(user);
     this.stoptLoading();
-  }
+  } */
 
   handleSubmit(event) {
     event.preventDefault();
@@ -176,9 +175,8 @@ class LogIn extends Component {
 
   render() {
     const { showingValidation, loading } = this.state;
-    const { test } = this.state;
     let email = '';
-    let { user } = this.context;
+    const { user } = this.context;
     // let spinner;
     let progress;
 
@@ -213,7 +211,7 @@ class LogIn extends Component {
         <Panel>
           <Panel.Heading>
             <Panel.Title className='text-center'>
-              Firebase Email Login {email}
+              Firebase Email Login
             </Panel.Title>
           </Panel.Heading>
           <Panel.Body>
@@ -242,21 +240,14 @@ class LogIn extends Component {
                 <Col smOffset={3} sm={6}>
                   <ButtonToolbar>
                     <Button disabled={false} bsStyle='primary' type='submit'>
-                      Login
-                    </Button>
-                    <Button
-                      disabled={false}
-                      bsStyle='primary'
-                      onClick={this.checkUser}
-                    >
-                      Check
+                      Sign in
                     </Button>
                     <Button
                       disabled={false}
                       bsStyle='primary'
                       onClick={this.signOut}
                     >
-                      Sign Out
+                      Sign out
                     </Button>
                   </ButtonToolbar>
                 </Col>

@@ -22,7 +22,7 @@ import withToast from './withToast.jsx';
 import UserContext from './UserContext.js';
 import PhoneNumberInput from './PhoneNumberInput.jsx';
 
-class ContactAdd extends React.Component {
+class ContactUpdate extends React.Component {
   constructor(props) {
     super(props);
 
@@ -45,12 +45,44 @@ class ContactAdd extends React.Component {
     this.showValidation = this.showValidation.bind(this);
   }
 
+  async componentDidMount() {
+    this.loadData();
+  }
+
+  /* async componentDidUpdate() {
+    this.loadData();
+  } */
+
   onChange(event) {
     console.log(`Onchange ${event.target.name}, ${event.target.value}`);
     const { name, value } = event.target;
     this.setState((prevState) => ({
       contact: { ...prevState.contact, [name]: value },
     }));
+  }
+
+  loadData() {
+    const {
+      match: {
+        params: { id },
+      },
+    } = this.props;
+    console.log(`Update ID: ${id}`);
+    const firestore = firebase.firestore();
+    const contactRef = firestore.collection('contacts').doc(id);
+    contactRef
+      .get()
+      .then((doc) => {
+        if (!doc.exists) {
+          console.log('No such document!');
+        } else {
+          console.log('Document data:', doc.data());
+          this.setState({ contact: doc.data() });
+        }
+      })
+      .catch((err) => {
+        console.log('Error getting document', err);
+      });
   }
 
   /* async getRealTimeUpdate() {
@@ -106,13 +138,19 @@ class ContactAdd extends React.Component {
       birthday,
     } = contact;
 
+    const {
+      match: {
+        params: { id },
+      },
+    } = this.props;
+
     // const docRef = firestore.collection('contacts');
     // await docRef.add(contact);
 
     const firestore = firebase.firestore();
-    const docRef = firestore.collection('contacts');
+    const docRef = firestore.collection('contacts').doc(id);
     await docRef
-      .add({
+      .update({
         name: name || '',
         personalNumber: personalNumber || '',
         businessNumber: businessNumber || '',
@@ -121,8 +159,8 @@ class ContactAdd extends React.Component {
         birthday: birthday || '',
       })
       .then((ref) => {
-        console.log('Contact written with ID: ', ref.id);
-        showSuccess('Added');
+        console.log('Contact written with ID: ', id);
+        showSuccess('Updated');
       })
       .catch((error) => {
         showError(error.message);
@@ -130,7 +168,7 @@ class ContactAdd extends React.Component {
   }
 
   render() {
-    const { showingValidation, loading } = this.state;
+    const { showingValidation, loading, contact } = this.state;
     let progress;
     let validationMessage = '';
 
@@ -175,6 +213,7 @@ class ContactAdd extends React.Component {
                     placeholder='Name'
                     name='name'
                     onChange={this.onChange}
+                    value={contact.name || ''}
                   />
                 </Col>
               </FormGroup>
@@ -190,6 +229,7 @@ class ContactAdd extends React.Component {
                     placeholder='Personal Number'
                     componentClass={PhoneNumberInput}
                     onChange={this.onChange}
+                    value={contact.personalNumber || ''}
                   />
                 </Col>
               </FormGroup>
@@ -205,6 +245,7 @@ class ContactAdd extends React.Component {
                     placeholder='Business Number'
                     componentClass={PhoneNumberInput}
                     onChange={this.onChange}
+                    value={contact.businessNumber || ''}
                   />
                 </Col>
               </FormGroup>
@@ -220,6 +261,7 @@ class ContactAdd extends React.Component {
                     placeholder='Email'
                     type='text'
                     onChange={this.onChange}
+                    value={contact.email || ''}
                   />
                 </Col>
               </FormGroup>
@@ -232,9 +274,10 @@ class ContactAdd extends React.Component {
                 <Col sm={6}>
                   <FormControl
                     name='address'
-                    placeholder='Address'
+                    placeholder='Updateress'
                     type='text'
                     onChange={this.onChange}
+                    value={contact.address || ''}
                   />
                 </Col>
               </FormGroup>
@@ -250,6 +293,7 @@ class ContactAdd extends React.Component {
                     placeholder='Birthday'
                     type='date'
                     onChange={this.onChange}
+                    value={contact.birthday || ''}
                   />
                 </Col>
               </FormGroup>
@@ -262,7 +306,7 @@ class ContactAdd extends React.Component {
                       bsStyle='primary'
                       type='submit'
                     >
-                      Create
+                      Update
                     </Button>
                   </ButtonToolbar>
                 </Col>
@@ -284,6 +328,6 @@ class ContactAdd extends React.Component {
   }
 }
 
-ContactAdd.contextType = UserContext;
-const ContactAddWithToast = withToast(ContactAdd);
-export default ContactAddWithToast;
+ContactUpdate.contextType = UserContext;
+const ContactUpdateWithToast = withToast(ContactUpdate);
+export default ContactUpdateWithToast;

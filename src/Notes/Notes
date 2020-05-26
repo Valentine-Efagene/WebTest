@@ -2,3 +2,5 @@
 2. Hosting URL: https://fir-ch2-5cbdb.web.app
 3. Hosting not updating: Clear your browser cache. It's in settings in chrome.
 4. Never try to get context from the constructor. It would not have been created by then. Do it in component did mount
+5. On running from firebase URL, page is blank, and console says error in app.bundle, with '<' in the message:
+   Run 'npm run compile', deploy, and delete cache.

@@ -47,13 +47,6 @@ export default class Page extends React.Component {
     firebase.auth().onAuthStateChanged((user) => {
       this.onUserChange(user);
       this.setState({ user });
-      // eslint-disable-next-line no-unused-expressions
-      if (user) {
-        console.log(`Page User: ${user}`);
-        // alert(`${user.email}`);
-      } else {
-        // alert('Logged out');
-      }
     });
   }
 
@@ -69,7 +62,7 @@ export default class Page extends React.Component {
         <UserContext.Provider
           value={{ test: 'worked', user, onUserChange: this.onUserChange }}
         >
-          <NavBar />
+          <NavBar user={user} />
           <Grid fluid>
             <Contents />
           </Grid>
@@ -94,7 +87,16 @@ function Footer() {
   );
 }
 
-function NavBar() {
+function NavBar({ user }) {
+  let contactAdd = '';
+  if (user) {
+    contactAdd = (
+      <LinkContainer to='/ContactAdd'>
+        <NavItem>Add Contact</NavItem>
+      </LinkContainer>
+    );
+  }
+
   return (
     <Navbar bg='light' expand='lg'>
       <Navbar.Toggle aria-controls='basic-navbar-nav' />
@@ -109,12 +111,7 @@ function NavBar() {
           <LinkContainer to='/about'>
             <NavItem>About</NavItem>
           </LinkContainer>
-          <LinkContainer to='/ContactAdd'>
-            <NavItem>Add Contact</NavItem>
-          </LinkContainer>
-          <LinkContainer to='/testlogin'>
-            <NavItem>TestLogIn</NavItem>
-          </LinkContainer>
+          {contactAdd}
         </Nav>
         <Nav pullRight>
           <NavDropdown
