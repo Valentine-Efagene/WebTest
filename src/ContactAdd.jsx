@@ -9,7 +9,6 @@ import {
   Button,
   ButtonToolbar,
   ControlLabel,
-  ProgressBar,
   Alert,
   Glyphicon,
   Image,
@@ -18,6 +17,7 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firebase-firestore';
 
+import Spinner from './Spinner.jsx';
 import withToast from './withToast.jsx';
 import UserContext from './UserContext.js';
 import PhoneNumberInput from './PhoneNumberInput.jsx';
@@ -46,7 +46,6 @@ class ContactAdd extends React.Component {
   }
 
   onChange(event) {
-    console.log(`Onchange ${event.target.name}, ${event.target.value}`);
     const { name, value } = event.target;
     this.setState((prevState) => ({
       contact: { ...prevState.contact, [name]: value },
@@ -96,7 +95,6 @@ class ContactAdd extends React.Component {
     }
 
     this.dismissValidation();
-    console.log(`handleSubmit Contact name: ${contact.name}`);
     const {
       name,
       personalNumber,
@@ -120,8 +118,7 @@ class ContactAdd extends React.Component {
         email: email || '',
         birthday: birthday || '',
       })
-      .then((ref) => {
-        console.log('Contact written with ID: ', ref.id);
+      .then(() => {
         showSuccess('Added');
       })
       .catch((error) => {
@@ -134,16 +131,10 @@ class ContactAdd extends React.Component {
     let progress;
     let validationMessage = '';
 
+    let spinner = null;
     if (loading) {
-      progress = <ProgressBar animated variant='success' now={45} />;
+      spinner = <Spinner size={50} />;
     }
-
-    /* const { user } = this.context;
-
-    let email = '';
-    if (user) {
-      email = user.email;
-    } */
 
     if (showingValidation) {
       validationMessage = (
@@ -270,6 +261,7 @@ class ContactAdd extends React.Component {
               <FormGroup>
                 <Col smOffset={2} sm={8}>
                   {validationMessage}
+                  {spinner}
                 </Col>
               </FormGroup>
             </Form>

@@ -15,7 +15,7 @@ import UserContext from './UserContext.js';
 // eslint-disable-next-line react/prefer-stateless-function
 class ContactRowPlain extends React.Component {
   render() {
-    const { contact, deleteContact, index } = this.props;
+    const { contact, deleteContact } = this.props;
     const { user } = this.context;
     const disabled = !user;
 

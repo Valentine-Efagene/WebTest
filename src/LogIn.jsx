@@ -9,10 +9,10 @@ import {
   Image,
   FormControl,
   Button,
-  ProgressBar,
   ButtonToolbar,
   Alert,
 } from 'react-bootstrap';
+import Spinner from './Spinner.jsx';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firebase-firestore';
@@ -37,11 +37,6 @@ class LogIn extends Component {
     this.signUpWithEmail = this.signUpWithEmail.bind(this);
     this.signInWithEmail = this.signInWithEmail.bind(this);
     this.signOut = this.signOut.bind(this);
-  }
-
-  componentDidMount() {
-    const { test } = this.context;
-    this.setState({ test });
   }
 
   onChange(event, naturalValue) {
@@ -75,13 +70,12 @@ class LogIn extends Component {
     await firebase
       .auth()
       .signOut()
-      .then((res) => {
+      .then(() => {
         const user = firebase.auth().currentUser;
         showSuccess('Signed out');
         onUserChange(user);
         this.setState({ user });
         this.stoptLoading();
-        console.log(`User after logout: ${user}`);
       })
       .catch((error) => {
         showError(error.message);
@@ -95,7 +89,7 @@ class LogIn extends Component {
     await firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then((res) => {
+      .then(() => {
         const user = firebase.auth().currentUser;
         showSuccess(`Signed in as ${user.email}`);
         onUserChange(user);
@@ -106,7 +100,7 @@ class LogIn extends Component {
         if (error.code === 'auth/weak-password') {
           showError('The password is too weak.');
         } else {
-          alert(error.message);
+          showError(error.message);
         }
       });
   }
@@ -119,13 +113,12 @@ class LogIn extends Component {
     await firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then((res) => {
+      .then(() => {
         const user = firebase.auth().currentUser;
         showSuccess(`Signed in as ${user.email}`);
         onUserChange(user);
         this.setState({ user });
         this.stoptLoading();
-        console.log(`User after sign in: ${user}`);
       })
       .catch(function (error) {
         // Handle Errors here.
@@ -133,27 +126,9 @@ class LogIn extends Component {
           showError('Wrong password.');
         } else {
           showError('Unknown error');
-          console.log('Unknown error');
-          console.log(error);
         }
       });
   }
-
-  /* async checkUser() {
-    const { showSuccess, showError } = this.props;
-    const { onUserChange } = this.context;
-    this.startLoading();
-    const user = await firebase.auth().currentUser;
-
-    if (user) {
-      showSuccess(`Signed in with ${user.email}`);
-    } else {
-      showError('Nobody is logged in');
-    }
-
-    onUserChange(user);
-    this.stoptLoading();
-  } */
 
   handleSubmit(event) {
     event.preventDefault();
@@ -175,18 +150,11 @@ class LogIn extends Component {
 
   render() {
     const { showingValidation, loading } = this.state;
-    let email = '';
-    const { user } = this.context;
-    // let spinner;
-    let progress;
+
+    let spinner = null;
 
     if (loading) {
-      progress = <ProgressBar animated='true' variant='success' now={45} />;
-    }
-
-    if (user) {
-      // eslint-disable-next-line prefer-destructuring
-      email = user.email;
+      spinner = <Spinner size={50} />;
     }
 
     let validationMessage;
@@ -197,14 +165,6 @@ class LogIn extends Component {
         </Alert>
       );
     }
-
-    /* if (loading) {
-      spinner = (
-        <Spinner animation='border' role='status'>
-          <span className='sr-only'>Loading...</span>
-        </Spinner>
-      );
-    } */
 
     return (
       <Col smOffset={3} sm={6}>
@@ -258,10 +218,10 @@ class LogIn extends Component {
                 </Col>
               </FormGroup>
             </Form>
+            {spinner}
           </Panel.Body>
           <Panel.Footer>
             <Image className='footer-image' src='./assets/images/home.png' />
-            {progress}
           </Panel.Footer>
         </Panel>
       </Col>

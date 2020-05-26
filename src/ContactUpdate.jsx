@@ -9,7 +9,6 @@ import {
   Button,
   ButtonToolbar,
   ControlLabel,
-  ProgressBar,
   Alert,
   Glyphicon,
   Image,
@@ -18,6 +17,7 @@ import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firebase-firestore';
 
+import Spinner from './Spinner.jsx';
 import withToast from './withToast.jsx';
 import UserContext from './UserContext.js';
 import PhoneNumberInput from './PhoneNumberInput.jsx';
@@ -54,7 +54,6 @@ class ContactUpdate extends React.Component {
   } */
 
   onChange(event) {
-    console.log(`Onchange ${event.target.name}, ${event.target.value}`);
     const { name, value } = event.target;
     this.setState((prevState) => ({
       contact: { ...prevState.contact, [name]: value },
@@ -62,40 +61,27 @@ class ContactUpdate extends React.Component {
   }
 
   loadData() {
+    const { showError } = this.props;
     const {
       match: {
         params: { id },
       },
     } = this.props;
-    console.log(`Update ID: ${id}`);
     const firestore = firebase.firestore();
     const contactRef = firestore.collection('contacts').doc(id);
     contactRef
       .get()
       .then((doc) => {
         if (!doc.exists) {
-          console.log('No such document!');
+          showError('No such document!');
         } else {
-          console.log('Document data:', doc.data());
           this.setState({ contact: doc.data() });
         }
       })
-      .catch((err) => {
-        console.log('Error getting document', err);
+      .catch((error) => {
+        showError(error.message);
       });
   }
-
-  /* async getRealTimeUpdate() {
-    const { contact } = this.state;
-    const firestore = firebase.firestore();
-    const docRef = firestore.collection('contacts').doc(contact.name);
-    await docRef.onSnapshot((doc) => {
-      if (doc && doc.exists) {
-        const myData = doc.data();
-        this.setState({ myData });
-      }
-    });
-  } */
 
   showValidation() {
     this.setState({ showingValidation: true });
@@ -128,7 +114,6 @@ class ContactUpdate extends React.Component {
     }
 
     this.dismissValidation();
-    console.log(`handleSubmit Contact name: ${contact.name}`);
     const {
       name,
       personalNumber,
@@ -144,9 +129,6 @@ class ContactUpdate extends React.Component {
       },
     } = this.props;
 
-    // const docRef = firestore.collection('contacts');
-    // await docRef.add(contact);
-
     const firestore = firebase.firestore();
     const docRef = firestore.collection('contacts').doc(id);
     await docRef
@@ -158,8 +140,7 @@ class ContactUpdate extends React.Component {
         email: email || '',
         birthday: birthday || '',
       })
-      .then((ref) => {
-        console.log('Contact written with ID: ', id);
+      .then(() => {
         showSuccess('Updated');
       })
       .catch((error) => {
@@ -169,19 +150,12 @@ class ContactUpdate extends React.Component {
 
   render() {
     const { showingValidation, loading, contact } = this.state;
-    let progress;
     let validationMessage = '';
 
+    let spinner = null;
     if (loading) {
-      progress = <ProgressBar animated variant='success' now={45} />;
+      spinner = <Spinner size={50} />;
     }
-
-    /* const { user } = this.context;
-
-    let email = '';
-    if (user) {
-      email = user.email;
-    } */
 
     if (showingValidation) {
       validationMessage = (
@@ -317,10 +291,10 @@ class ContactUpdate extends React.Component {
                 </Col>
               </FormGroup>
             </Form>
+            {spinner}
           </Panel.Body>
           <Panel.Footer>
             <Image className='footer-image' src='./assets/images/home.png' />
-            {progress}
           </Panel.Footer>
         </Panel>
       </Col>

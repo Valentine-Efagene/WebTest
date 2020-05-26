@@ -3,27 +3,17 @@
 
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import {
-  FormGroup,
-  FormControl,
-  ControlLabel,
-  Row,
-  Col,
-} from 'react-bootstrap';
+import { FormGroup, FormControl, Row, Col } from 'react-bootstrap';
 
 class ContactFilter extends React.Component {
   constructor() {
     super();
-    this.state = { changed: false };
-    this.onChange = this.onChange.bind(this);
-  }
-
-  onChange(e) {
-    this.setState({ name: e.target.value, changed: true });
+    this.state = {};
   }
 
   render() {
-    const { name } = this.state;
+    const { onChange } = this.props;
+
     return (
       <div>
         <Row>
@@ -31,9 +21,8 @@ class ContactFilter extends React.Component {
             <FormGroup>
               <FormControl
                 type='text'
-                placeholder='Not yet implemented'
-                value={name}
-                onChange={this.onChangeStatus}
+                placeholder='Enter full name'
+                onChange={onChange}
               />
             </FormGroup>
           </Col>
