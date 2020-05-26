@@ -94,7 +94,6 @@ class LogIn extends Component {
         showSuccess(`Signed in as ${user.email}`);
         onUserChange(user);
         this.setState({ user });
-        this.stoptLoading();
       })
       .catch(function (error) {
         if (error.code === 'auth/weak-password') {
@@ -102,6 +101,9 @@ class LogIn extends Component {
         } else {
           showError(error.message);
         }
+      })
+      .finally(() => {
+        this.stopLoading();
       });
   }
 
@@ -121,7 +123,7 @@ class LogIn extends Component {
         this.stoptLoading();
       })
       .catch(function (error) {
-        // Handle Errors here.
+        this.stoptLoading();
         if (error.code === 'auth/wrong-password') {
           showError('Wrong password.');
         } else {

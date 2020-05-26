@@ -52,18 +52,6 @@ class ContactAdd extends React.Component {
     }));
   }
 
-  /* async getRealTimeUpdate() {
-    const { contact } = this.state;
-    const firestore = firebase.firestore();
-    const docRef = firestore.collection('contacts').doc(contact.name);
-    await docRef.onSnapshot((doc) => {
-      if (doc && doc.exists) {
-        const myData = doc.data();
-        this.setState({ myData });
-      }
-    });
-  } */
-
   showValidation() {
     this.setState({ showingValidation: true });
   }
@@ -104,11 +92,9 @@ class ContactAdd extends React.Component {
       birthday,
     } = contact;
 
-    // const docRef = firestore.collection('contacts');
-    // await docRef.add(contact);
-
     const firestore = firebase.firestore();
     const docRef = firestore.collection('contacts');
+    this.startLoading();
     await docRef
       .add({
         name: name || '',
@@ -123,6 +109,9 @@ class ContactAdd extends React.Component {
       })
       .catch((error) => {
         showError(error.message);
+      })
+      .finally(() => {
+        this.stopLoading();
       });
   }
 

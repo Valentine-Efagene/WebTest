@@ -49,10 +49,6 @@ class ContactUpdate extends React.Component {
     this.loadData();
   }
 
-  /* async componentDidUpdate() {
-    this.loadData();
-  } */
-
   onChange(event) {
     const { name, value } = event.target;
     this.setState((prevState) => ({
@@ -69,6 +65,7 @@ class ContactUpdate extends React.Component {
     } = this.props;
     const firestore = firebase.firestore();
     const contactRef = firestore.collection('contacts').doc(id);
+    this.startLoading();
     contactRef
       .get()
       .then((doc) => {
@@ -80,6 +77,9 @@ class ContactUpdate extends React.Component {
       })
       .catch((error) => {
         showError(error.message);
+      })
+      .finally(() => {
+        this.stopLoading();
       });
   }
 
@@ -131,6 +131,7 @@ class ContactUpdate extends React.Component {
 
     const firestore = firebase.firestore();
     const docRef = firestore.collection('contacts').doc(id);
+    this.startLoading();
     await docRef
       .update({
         name: name || '',
@@ -145,6 +146,9 @@ class ContactUpdate extends React.Component {
       })
       .catch((error) => {
         showError(error.message);
+      })
+      .finally(() => {
+        this.stopLoading();
       });
   }
 

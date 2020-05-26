@@ -31,8 +31,10 @@ class ContactList extends React.Component {
     this.setState({ name: e.target.value });
   }
 
-  static async getContacts() {
+  async getContacts() {
     const contacts = [];
+
+    this.startLoading();
     await firebase
       .firestore()
       .collection('contacts')
@@ -43,7 +45,11 @@ class ContactList extends React.Component {
           const contact = doc.data();
           contact.id = doc.id;
           contacts.push(contact);
+          this.stopLoading();
         });
+      })
+      .finally(() => {
+        this.stopLoading();
       });
 
     return contacts;
@@ -58,14 +64,12 @@ class ContactList extends React.Component {
   }
 
   async loadData() {
-    this.startLoading();
-    const contacts = await ContactList.getContacts();
+    const contacts = await this.getContacts();
     if (contacts) {
       this.setState({
         contacts,
       });
     }
-    this.stopLoading();
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -132,5 +136,4 @@ class ContactList extends React.Component {
 
 ContactList.contextType = UserContext;
 const ContactListWithToast = withToast(ContactList);
-ContactListWithToast.getContacts = ContactList.getContacts;
 export default ContactListWithToast;
