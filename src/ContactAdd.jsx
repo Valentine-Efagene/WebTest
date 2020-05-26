@@ -21,6 +21,8 @@ import Spinner from './Spinner.jsx';
 import withToast from './withToast.jsx';
 import UserContext from './UserContext.js';
 import PhoneNumberInput from './PhoneNumberInput.jsx';
+import img from './assets/images/home.png';
+import './assets/css/styles.css';
 
 class ContactAdd extends React.Component {
   constructor(props) {
@@ -256,7 +258,7 @@ class ContactAdd extends React.Component {
             </Form>
           </Panel.Body>
           <Panel.Footer>
-            <Image className='footer-image' src='./assets/images/home.png' />
+            <Image className='footer-image' src={img} />
             {progress}
           </Panel.Footer>
         </Panel>

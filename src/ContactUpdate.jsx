@@ -21,6 +21,8 @@ import Spinner from './Spinner.jsx';
 import withToast from './withToast.jsx';
 import UserContext from './UserContext.js';
 import PhoneNumberInput from './PhoneNumberInput.jsx';
+import img from './assets/images/home.png';
+import './assets/css/styles.css';
 
 class ContactUpdate extends React.Component {
   constructor(props) {
@@ -95,7 +97,7 @@ class ContactUpdate extends React.Component {
     this.setState({ loading: true });
   }
 
-  stoptLoading() {
+  stopLoading() {
     this.setState({ loading: false });
   }
 
@@ -298,7 +300,7 @@ class ContactUpdate extends React.Component {
             {spinner}
           </Panel.Body>
           <Panel.Footer>
-            <Image className='footer-image' src='./assets/images/home.png' />
+            <Image className='footer-image' src={img} />
           </Panel.Footer>
         </Panel>
       </Col>

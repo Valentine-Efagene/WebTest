@@ -12,13 +12,15 @@ import {
   ButtonToolbar,
   Alert,
 } from 'react-bootstrap';
-import Spinner from './Spinner.jsx';
 import * as firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firebase-firestore';
 
+import Spinner from './Spinner.jsx';
 import withToast from './withToast.jsx';
 import UserContext from './UserContext.js';
+import img from './assets/images/home.png';
+import './assets/css/styles.css';
 
 class LogIn extends Component {
   constructor(props) {
@@ -223,7 +225,7 @@ class LogIn extends Component {
             {spinner}
           </Panel.Body>
           <Panel.Footer>
-            <Image className='footer-image' src='./assets/images/home.png' />
+            <Image className='footer-image' src={img} />
           </Panel.Footer>
         </Panel>
       </Col>
