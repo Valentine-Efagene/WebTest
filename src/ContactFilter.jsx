@@ -21,7 +21,7 @@ class ContactFilter extends React.Component {
             <FormGroup>
               <FormControl
                 type='text'
-                placeholder='Enter full name'
+                placeholder='Search'
                 onChange={onChange}
               />
             </FormGroup>
