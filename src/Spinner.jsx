@@ -14,7 +14,7 @@ function Spinner({ size, color }) {
     <ClipLoader
       css={override}
       size={size}
-      color={color || 'aqua'}
+      color={color || 'orange'}
       loading='true'
     />
   );

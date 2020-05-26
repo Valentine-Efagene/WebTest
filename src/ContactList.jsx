@@ -33,6 +33,7 @@ class ContactList extends React.Component {
 
   async getContacts() {
     const contacts = [];
+    const { showError } = this.props;
 
     this.startLoading();
     await firebase
@@ -47,6 +48,9 @@ class ContactList extends React.Component {
           contacts.push(contact);
           this.stopLoading();
         });
+      })
+      .catch((error) => {
+        showError(error.message);
       })
       .finally(() => {
         this.stopLoading();
@@ -72,10 +76,9 @@ class ContactList extends React.Component {
     }
   }
 
-  // eslint-disable-next-line no-unused-vars
-  // eslint-disable-next-line class-methods-use-this
   async deleteContact(id) {
     const { showSuccess, showError } = this.props;
+    this.startLoading();
     await firebase
       .firestore()
       .collection('contacts')
@@ -87,6 +90,9 @@ class ContactList extends React.Component {
       })
       .catch((error) => {
         showError(error.message);
+      })
+      .finally(() => {
+        this.stopLoading();
       });
   }
 

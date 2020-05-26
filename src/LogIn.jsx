@@ -120,21 +120,21 @@ class LogIn extends Component {
         showSuccess(`Signed in as ${user.email}`);
         onUserChange(user);
         this.setState({ user });
-        this.stoptLoading();
       })
       .catch(function (error) {
-        this.stoptLoading();
         if (error.code === 'auth/wrong-password') {
           showError('Wrong password.');
         } else {
-          showError('Unknown error');
+          showError(error.message);
         }
+      })
+      .catch(() => {
+        this.stoptLoading();
       });
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    // const { showSuccess, showError } = this.props;
     const { user } = this.state;
 
     if (

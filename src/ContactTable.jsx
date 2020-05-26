@@ -5,6 +5,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import {
   Button,
   Glyphicon,
+  Modal,
   Tooltip,
   OverlayTrigger,
   Table,
@@ -14,11 +15,27 @@ import UserContext from './UserContext.js';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class ContactRowPlain extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showingModal: false,
+    };
+  }
+
+  showModal() {
+    this.setState({ showingModal: true });
+  }
+
+  hideModal() {
+    this.setState({ showingModal: false });
+  }
+
   render() {
     const { contact, deleteContact } = this.props;
     const { user } = this.context;
+    const { showingModal } = this.state;
     const disabled = !user;
-
     const updateTooltip = (
       <Tooltip id='close-tooltip' placement='top'>
         Edit Contact
@@ -29,11 +46,6 @@ class ContactRowPlain extends React.Component {
         Delete Contact
       </Tooltip>
     );
-
-    function onDelete(e) {
-      e.preventDefault();
-      deleteContact(contact.id);
-    }
 
     let actions = null;
     if (user) {
@@ -47,7 +59,13 @@ class ContactRowPlain extends React.Component {
             </OverlayTrigger>
           </LinkContainer>
           <OverlayTrigger delayShow={1000} overlay={deleteTooltip}>
-            <Button disabled={disabled} bsSize='xsmall' onClick={onDelete}>
+            <Button
+              disabled={disabled}
+              bsSize='xsmall'
+              onClick={() => {
+                this.setState({ showingModal: true });
+              }}
+            >
               <Glyphicon glyph='trash' />
             </Button>
           </OverlayTrigger>
@@ -56,15 +74,55 @@ class ContactRowPlain extends React.Component {
     }
 
     return (
-      <tr>
-        <td>{contact.name}</td>
-        <td>{contact.personalNumber}</td>
-        <td>{contact.businessNumber}</td>
-        <td>{contact.email}</td>
-        <td>{contact.address}</td>
-        <td>{contact.birthday}</td>
-        {actions}
-      </tr>
+      <>
+        <Modal
+          show={showingModal}
+          onHide={() => {
+            this.setState({ showingModal: false });
+          }}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>
+              <Glyphicon
+                glyph='warning-sign'
+                style={{
+                  color: 'orange',
+                }}
+              />
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Are you sure you want to delete this contact?</Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant='secondary'
+              onClick={() => {
+                this.setState({ showingModal: false });
+              }}
+            >
+              No
+            </Button>
+            <Button
+              style={{
+                backgroundColor: 'orange',
+              }}
+              onClick={() => {
+                deleteContact(contact.id);
+              }}
+            >
+              Yes
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        <tr>
+          <td>{contact.name}</td>
+          <td>{contact.personalNumber}</td>
+          <td>{contact.businessNumber}</td>
+          <td>{contact.email}</td>
+          <td>{contact.address}</td>
+          <td>{contact.birthday}</td>
+          {actions}
+        </tr>
+      </>
     );
   }
 }
