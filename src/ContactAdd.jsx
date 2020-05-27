@@ -37,6 +37,7 @@ class ContactAdd extends React.Component {
         address: '',
         email: '',
         birthday: '',
+        owner: '',
       },
       loading: false,
     };
@@ -66,7 +67,7 @@ class ContactAdd extends React.Component {
     this.setState({ loading: true });
   }
 
-  stoptLoading() {
+  stopLoading() {
     this.setState({ loading: false });
   }
 
@@ -105,6 +106,7 @@ class ContactAdd extends React.Component {
         address: address || '',
         email: email || '',
         birthday: birthday || '',
+        owner: firebase.auth().currentUser.uid,
       })
       .then(() => {
         showSuccess('Added');

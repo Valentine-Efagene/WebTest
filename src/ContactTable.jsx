@@ -12,8 +12,8 @@ import {
 } from 'react-bootstrap';
 
 import UserContext from './UserContext.js';
+import admins from './admins.js';
 
-// eslint-disable-next-line react/prefer-stateless-function
 class ContactRowPlain extends React.Component {
   constructor(props) {
     super(props);
@@ -33,9 +33,14 @@ class ContactRowPlain extends React.Component {
 
   render() {
     const { contact, deleteContact } = this.props;
-    const { user } = this.context;
+    const { user } = this.props;
     const { showingModal } = this.state;
-    const disabled = !user;
+    let disabled = true;
+
+    if (user) {
+      disabled = user.uid !== contact.owner;
+      if (disabled) disabled = !admins.includes(user.email);
+    }
     const updateTooltip = (
       <Tooltip id='close-tooltip' placement='top'>
         Edit Contact
@@ -46,32 +51,6 @@ class ContactRowPlain extends React.Component {
         Delete Contact
       </Tooltip>
     );
-
-    let actions = null;
-    if (user) {
-      actions = (
-        <td>
-          <LinkContainer to={`/edit/${contact.id}`}>
-            <OverlayTrigger delayShow={1000} overlay={updateTooltip}>
-              <Button bsSize='xsmall'>
-                <Glyphicon glyph='edit' />
-              </Button>
-            </OverlayTrigger>
-          </LinkContainer>
-          <OverlayTrigger delayShow={1000} overlay={deleteTooltip}>
-            <Button
-              disabled={disabled}
-              bsSize='xsmall'
-              onClick={() => {
-                this.setState({ showingModal: true });
-              }}
-            >
-              <Glyphicon glyph='trash' />
-            </Button>
-          </OverlayTrigger>
-        </td>
-      );
-    }
 
     return (
       <>
@@ -120,7 +99,26 @@ class ContactRowPlain extends React.Component {
           <td>{contact.email}</td>
           <td>{contact.address}</td>
           <td>{contact.birthday}</td>
-          {actions}
+          <td>
+            <LinkContainer to={`/edit/${contact.id}`}>
+              <OverlayTrigger delayShow={1000} overlay={updateTooltip}>
+                <Button bsSize='xsmall' disabled={disabled}>
+                  <Glyphicon glyph='edit' />
+                </Button>
+              </OverlayTrigger>
+            </LinkContainer>
+            <OverlayTrigger delayShow={1000} overlay={deleteTooltip}>
+              <Button
+                disabled={disabled}
+                bsSize='xsmall'
+                onClick={() => {
+                  this.setState({ showingModal: true });
+                }}
+              >
+                <Glyphicon glyph='trash' />
+              </Button>
+            </OverlayTrigger>
+          </td>
         </tr>
       </>
     );
@@ -134,6 +132,7 @@ delete ContactRow.contextType;
 export default function ContactTable({ contacts, deleteContact, user }) {
   const contactRows = contacts.map((contact) => (
     <ContactRow
+      user={user}
       key={contact.id}
       contact={contact}
       deleteContact={deleteContact}

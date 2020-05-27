@@ -99,6 +99,7 @@ class ContactList extends React.Component {
   render() {
     const { contacts, name, loading } = this.state;
     let filteredContacts = contacts;
+    const { user } = this.context;
 
     if (name !== '' && contacts) {
       filteredContacts = contacts.filter((contact) => {
@@ -117,6 +118,7 @@ class ContactList extends React.Component {
     } else {
       contactTable = (
         <ContactTable
+          user={user}
           contacts={filteredContacts}
           deleteContact={this.deleteContact}
         />

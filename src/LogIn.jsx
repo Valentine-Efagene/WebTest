@@ -9,6 +9,7 @@ import {
   Image,
   FormControl,
   Button,
+  Glyphicon,
   ButtonToolbar,
   Alert,
 } from 'react-bootstrap';
@@ -30,6 +31,7 @@ class LogIn extends Component {
       showingValidation: false,
       user: null,
       loading: false,
+      noAccount: false,
     };
 
     this.onChange = this.onChange.bind(this);
@@ -93,7 +95,7 @@ class LogIn extends Component {
       .createUserWithEmailAndPassword(email, password)
       .then(() => {
         const user = firebase.auth().currentUser;
-        showSuccess(`Signed in as ${user.email}`);
+        showSuccess(`Signed up as ${user.email}`);
         onUserChange(user);
         this.setState({ user });
       })
@@ -105,6 +107,7 @@ class LogIn extends Component {
         }
       })
       .finally(() => {
+        this.setState({ noAccount: false });
         this.stopLoading();
       });
   }
@@ -137,7 +140,7 @@ class LogIn extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const { user } = this.state;
+    const { user, noAccount } = this.state;
 
     if (
       user.password === undefined ||
@@ -148,13 +151,18 @@ class LogIn extends Component {
       this.showValidation();
     } else {
       this.dismissValidation();
-      this.signInWithEmail(user.email, user.password);
+
+      if (noAccount) {
+        this.signUpWithEmail(user.email, user.password);
+      } else {
+        this.signInWithEmail(user.email, user.password);
+      }
     }
   }
 
   render() {
-    const { showingValidation, loading } = this.state;
-
+    const { showingValidation, loading, noAccount } = this.state;
+    const { user } = this.context;
     let spinner = null;
 
     if (loading) {
@@ -170,6 +178,29 @@ class LogIn extends Component {
       );
     }
 
+    let btn = (
+      <Button disabled={false} bsStyle='primary' type='submit'>
+        Sign in <Glyphicon glyph='log-in' />
+      </Button>
+    );
+
+    if (user) {
+      btn = (
+        <Button disabled={false} bsStyle='primary' onClick={this.signOut}>
+          Sign out <Glyphicon glyph='log-out' />
+        </Button>
+      );
+    }
+
+    if (noAccount) {
+      btn = (
+        <Button disabled={false} bsStyle='primary' onClick={this.handleSubmit}>
+          Sign up
+          <Glyphicon glyph='user' />
+        </Button>
+      );
+    }
+
     return (
       <Col smOffset={3} sm={6}>
         <Panel>
@@ -180,6 +211,22 @@ class LogIn extends Component {
           </Panel.Heading>
           <Panel.Body>
             <Form horizontal onSubmit={this.handleSubmit}>
+              <FormGroup>
+                <Col smOffset={3} sm={6}>
+                  <Button
+                    variant='light'
+                    style={{
+                      border: 'none',
+                    }}
+                    disabled={user !== null}
+                    onClick={() => {
+                      this.setState({ noAccount: true });
+                    }}
+                  >
+                    Want to create an account?
+                  </Button>
+                </Col>
+              </FormGroup>
               <FormGroup>
                 <Col smOffset={3} sm={6}>
                   <FormControl
@@ -202,18 +249,7 @@ class LogIn extends Component {
               </FormGroup>
               <FormGroup>
                 <Col smOffset={3} sm={6}>
-                  <ButtonToolbar>
-                    <Button disabled={false} bsStyle='primary' type='submit'>
-                      Sign in
-                    </Button>
-                    <Button
-                      disabled={false}
-                      bsStyle='primary'
-                      onClick={this.signOut}
-                    >
-                      Sign out
-                    </Button>
-                  </ButtonToolbar>
+                  <ButtonToolbar>{btn}</ButtonToolbar>
                 </Col>
               </FormGroup>
               <FormGroup>
