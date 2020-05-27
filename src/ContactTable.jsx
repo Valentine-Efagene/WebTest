@@ -12,7 +12,6 @@ import {
 } from 'react-bootstrap';
 
 import UserContext from './UserContext.js';
-import admins from './admins.js';
 
 class ContactRowPlain extends React.Component {
   constructor(props) {
@@ -33,7 +32,7 @@ class ContactRowPlain extends React.Component {
 
   render() {
     const { contact, deleteContact } = this.props;
-    const { user } = this.props;
+    const { user, admins } = this.props;
     const { showingModal } = this.state;
     let disabled = true;
 
@@ -129,10 +128,16 @@ ContactRowPlain.contextType = UserContext;
 const ContactRow = withRouter(ContactRowPlain);
 delete ContactRow.contextType;
 
-export default function ContactTable({ contacts, deleteContact, user }) {
+export default function ContactTable({
+  contacts,
+  deleteContact,
+  user,
+  admins,
+}) {
   const contactRows = contacts.map((contact) => (
     <ContactRow
       user={user}
+      admins={admins}
       key={contact.id}
       contact={contact}
       deleteContact={deleteContact}

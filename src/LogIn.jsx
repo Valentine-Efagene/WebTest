@@ -195,8 +195,7 @@ class LogIn extends Component {
     if (noAccount) {
       btn = (
         <Button disabled={false} bsStyle='primary' onClick={this.handleSubmit}>
-          Sign up
-          <Glyphicon glyph='user' />
+          Sign up <Glyphicon glyph='user' />
         </Button>
       );
     }

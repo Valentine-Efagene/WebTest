@@ -15,6 +15,7 @@ class ContactList extends React.Component {
     super();
     this.state = {
       contacts: null,
+      admins: null,
       name: '',
       loading: false,
     };
@@ -25,6 +26,7 @@ class ContactList extends React.Component {
 
   async componentDidMount() {
     this.loadData();
+    this.loadAdmins();
   }
 
   onChange(e) {
@@ -57,6 +59,31 @@ class ContactList extends React.Component {
       });
 
     return contacts;
+  }
+
+  async loadAdmins() {
+    const { showError } = this.props;
+
+    this.startLoading();
+    await firebase
+      .firestore()
+      .collection('admins')
+      .doc('admins')
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          this.setState({ admins: doc.data().admins });
+        } else {
+          showError('Could not obtain admins');
+        }
+        this.stopLoading();
+      })
+      .catch((error) => {
+        showError(error.message);
+      })
+      .finally(() => {
+        this.stopLoading();
+      });
   }
 
   startLoading() {
@@ -97,7 +124,7 @@ class ContactList extends React.Component {
   }
 
   render() {
-    const { contacts, name, loading } = this.state;
+    const { contacts, admins, name, loading } = this.state;
     let filteredContacts = contacts;
     const { user } = this.context;
 
@@ -119,6 +146,7 @@ class ContactList extends React.Component {
       contactTable = (
         <ContactTable
           user={user}
+          admins={admins || []}
           contacts={filteredContacts}
           deleteContact={this.deleteContact}
         />
